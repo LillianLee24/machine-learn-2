@@ -1,0 +1,41 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.metrics import accuracy_score
+
+data = {
+    'education': ['bachelor', 'master', 'phd', 'bachelor', 'highschool', 
+                  'master', 'bachelor', 'phd', 'highschool', 'master'],
+    'experience': ['junior', 'mid', 'senior', 'junior', 'junior', 
+                   'senior', 'mid', 'senior', 'junior', 'mid'],
+    'hired': [0, 1, 1, 0, 0, 1, 1, 1, 0, 1]  
+}
+
+df = pd.DataFrame(data)
+
+encoder = OneHotEncoder()
+encoded_features = encoder.fit_transform(df[['education', 'experience']]).toarray()
+
+feature_names = encoder.get_feature_names_out(['education', 'experience'])
+
+X = pd.DataFrame(encoded_features, columns=feature_names)
+y = df['hired']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy * 100:.2f}%")
+
+new_candidates = pd.DataFrame(encoder.transform([
+    ['phd', 'junior'],  
+    ['bachelor', 'senior'] 
+]).toarray(), columns=feature_names)
+
+predictions = model.predict(new_candidates)
+print("Predictions for new candidates:", predictions)
