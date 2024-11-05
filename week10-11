@@ -1,0 +1,31 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+data = {
+    'credit_score': [580, 690, 720, 810, 600, 740, 670, 700, 730, 650],
+    'payment_history': [1, 1, 1, 1, 0, 1, 0, 1, 0, 0],  
+    'annual_income': [45000, 75000, 80000, 120000, 50000, 90000, 48000, 55000, 72000, 60000],  
+    'debt_to_income_ratio': [0.4, 0.3, 0.25, 0.1, 0.5, 0.2, 0.55, 0.45, 0.3, 0.35],  
+    'loan_repaid': [0, 1, 1, 1, 0, 1, 0, 1, 0, 0]  
+}
+
+df = pd.DataFrame(data)
+
+X = df[['credit_score', 'payment_history', 'annual_income', 'debt_to_income_ratio']]
+y = df['loan_repaid']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+model = DecisionTreeClassifier(max_depth=3)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model Accuracy: {accuracy * 100:.2f}%")
+
+new_applicant = [[700, 1, 60000, 0.3]]   
+prediction = model.predict(new_applicant)
+print("Loan repaid prediction for new applicant:", "Yes" if prediction[0] == 1 else "No")
