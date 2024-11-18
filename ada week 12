@@ -1,0 +1,41 @@
+import tensorflow as tf
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Input
+from tensorflow.keras.datasets import mnist
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+import numpy as np
+
+(X_train, y_train), (X_test, y_test) = mnist.load_data()
+
+X_train = X_train / 255.0
+X_test = X_test / 255.0
+
+X_train = np.expand_dims(X_train, axis=-1)
+X_test = np.expand_dims(X_test, axis=-1)
+
+y_train = y_train.flatten()
+y_test = y_test.flatten()
+
+input_layer = Input(shape=(28, 28, 1))
+x = Conv2D(32, (3, 3), activation='relu')(input_layer)
+x = MaxPooling2D((2, 2))(x)
+x = Conv2D(64, (3, 3), activation='relu')(x)
+x = MaxPooling2D((2, 2))(x)
+x = Flatten()(x)
+feature_extractor = Model(inputs=input_layer, outputs=x)
+
+X_train_features = feature_extractor.predict(X_train)
+X_test_features = feature_extractor.predict(X_test)
+
+
+stump = DecisionTreeClassifier(max_depth=1)
+ada_boost = AdaBoostClassifier(base_estimator=stump, n_estimators=50, random_state=42)
+
+ada_boost.fit(X_train_features, y_train)
+
+
+y_pred = ada_boost.predict(X_test_features)
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Combined CNN + AdaBoost Accuracy: {accuracy * 100:.2f}%")
