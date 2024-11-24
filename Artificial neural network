@@ -1,0 +1,31 @@
+import numpy as np
+
+X = np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]])
+
+y = np.array([[1], [0]])
+
+weights = np.random.rand(3, 1)  
+bias = np.random.rand(1)
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def sigmoid_derivative(x):
+    return x * (1 - x)
+
+learning_rate = 0.01
+for epoch in range(1000):
+    
+    z = np.dot(X, weights) + bias
+    predictions = sigmoid(z)
+
+    error = y - predictions
+
+    adjustments = error * sigmoid_derivative(predictions)
+    weights += np.dot(X.T, adjustments) * learning_rate
+    bias += np.sum(adjustments) * learning_rate
+
+print("Обученные веса:", weights)
+print("Обученное смещение:", bias)
+
+print("Предсказания для X:", sigmoid(np.dot(X, weights) + bias))
