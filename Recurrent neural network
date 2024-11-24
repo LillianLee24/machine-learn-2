@@ -1,0 +1,33 @@
+import numpy as np
+data = [
+    [1, 2, 3],  
+    [4, 5, 6],  
+    [7, 8, 9]   
+]
+
+data = np.array(data)
+
+input_size = 1 
+hidden_size = 32  
+output_size = 1  
+Wxh = np.random.randn(hidden_size, input_size) * 0.01  
+Whh = np.random.randn(hidden_size, hidden_size) * 0.01  
+Why = np.random.randn(output_size, hidden_size) * 0.01  
+bh = np.zeros((hidden_size, 1))  
+by = np.zeros((output_size, 1))  
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def rnn_forward(X, h_prev):
+    h = np.tanh(np.dot(Wxh, X) + np.dot(Whh, h_prev) + bh)  
+    y = sigmoid(np.dot(Why, h) + by) 
+    return h, y
+
+h_prev = np.zeros((hidden_size, 1))
+
+for sequence in data:
+    print(f"Обработка последовательности: {sequence}")
+    for t in sequence:
+        X = np.array([[t]])  
+        h_prev, y = rnn_forward(X, h_prev)
+        print(f"Вход: {t}, Предсказание: {y}")
