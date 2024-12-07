@@ -21,3 +21,10 @@ accuracy = accuracy_score(y_test, y_pred)
 conf_matrix = confusion_matrix(y_test, y_pred)
 print("Accuracy:", accuracy)
 print("Confusion Matrix:\n", conf_matrix)
+
+
+
+Код применяет алгоритм случайного леса (Random Forest) для классификации данных набора данных Iris.
+Данные разбиваются на обучающую и тестовую выборки, обучается модель случайного леса с 100 деревьями, 
+а затем делается предсказание на тестовой выборке. В результате вычисляются точность модели (accuracy)
+и матрица ошибок (confusion matrix) для анализа качества классификации.
