@@ -1,0 +1,39 @@
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from sklearn.datasets import fetch_openml
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelBinarizer
+
+mnist = fetch_openml('mnist_784', version=1)
+X = mnist.data.to_numpy().reshape(-1, 28, 28, 1) / 255.0
+y = LabelBinarizer().fit_transform(mnist.target)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = Sequential([
+    Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),
+    MaxPooling2D((2, 2)),
+    Conv2D(64, (3, 3), activation='relu'),
+    MaxPooling2D((2, 2)),
+    Flatten(),
+    Dense(128, activation='relu'),
+    Dense(10, activation='softmax')
+])
+
+model.compile(optimizer='adam',
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+
+model.fit(X_train, y_train, epochs=5, batch_size=32, validation_split=0.2, verbose=1)
+
+loss, accuracy = model.evaluate(X_test, y_test, verbose=1)
+print(f"Test accuracy: {accuracy * 100:.2f}%")
+
+
+
+Этот код создает сверточную нейронную сеть (CNN) для классификации рукописных цифр из 
+набора данных MNIST. Данные MNIST загружаются и нормализуются, затем разбиваются на 
+обучающую и тестовую выборки. CNN модель содержит два сверточных слоя с операцией пулинга, 
+а также полносвязные слои для классификации. Модель обучается на обучающей выборке и проверяется на тестовой выборке.
