@@ -1,0 +1,29 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def fuzzy_logic(x):
+    low = max(0, min(1, (30 - x) / 30))
+    medium = max(0, min(1, (x - 30) / 30))
+    high = max(0, min(1, (x - 60) / 30))
+    return low, medium, high
+
+x = np.linspace(0, 90, 100)
+low, medium, high = fuzzy_logic(x)
+
+plt.plot(x, low, label="Low")
+plt.plot(x, medium, label="Medium")
+plt.plot(x, high, label="High")
+plt.xlabel("Input value")
+plt.ylabel("Membership")
+plt.legend()
+plt.show()
+
+
+
+В этом примере реализована базовая модель fuzzy logic (нечеткой логики). 
+Fuzzy logic работает с неопределенными и промежуточными значениями, в отличие 
+от традиционной бинарной логики. Здесь три категории: low, medium и high, 
+представляют степени принадлежности различных состояний к числовым диапазонам. 
+Каждое состояние изменяется в зависимости от входного значения, определяя нечеткие 
+границы между классами. Это позволяет моделировать ситуации,
+где четкая бинаризация невозможна, и данные могут находиться в промежуточных состояниях.
